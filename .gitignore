@@ -1,0 +1,13 @@
+# do not commit dependencies or built files
+node_modules/
+dist/
+
+# do not commit local or individualized config files
+.editorconfig
+.node-version
+.tool-versions
+.cache/
+.vscode/
+
+# do not commit error logs
+yarn-error.log
