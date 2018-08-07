@@ -3,11 +3,13 @@ node_modules/
 dist/
 
 # do not commit local or individualized config files
+.envrc
 .editorconfig
 .node-version
 .tool-versions
 .cache/
 .vscode/
 
-# do not commit error logs
+# do not commit error logs or system files
+.DS_Store
 yarn-error.log

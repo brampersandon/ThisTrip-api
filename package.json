@@ -6,12 +6,15 @@
   "scripts": {
     "start": "yarn build & nodemon dist/index.js",
     "build": "parcel watch src/index.js --target=node",
+    "test": "jest",
     "precommit": "lint-staged"
   },
   "dependencies": {
     "apollo-server": "^2.0.0",
     "axios": "^0.18.0",
-    "graphql": "^0.13.2"
+    "fast-csv": "^2.4.1",
+    "graphql": "^0.13.2",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -27,6 +30,7 @@
   "lint-staged": {
     "src/**/*.js": [
       "flow",
+      "jest",
       "prettier --write --no-semi --single-quote",
       "git add ."
     ]
