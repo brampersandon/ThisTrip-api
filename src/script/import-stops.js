@@ -22,6 +22,7 @@ const stopFns = {
         value: {
             name: stop_name,
             description: stop_desc,
+            id: stop_id,
             latitude: stop_lat.trim(),
             longitude: stop_lon.trim()
         }
@@ -40,6 +41,7 @@ const fstream = fs.createReadStream('./src/data/stops.csv')
 const cstream = csv({ headers: true })
     .on('data', (data) => {
         const rec = stopFns.parseRecord(data)
+        client.hmset(rec.key, rec.value)
         const geoRec = stopFns.parseGeoRecord(data)
         stops[geoRec.key] = geoRec.value
     })

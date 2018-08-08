@@ -43,12 +43,14 @@ const typeDefs = gql`
         id: String
         latitude: Float
         longitude: Float
+        distance: Float
     }
 
     type Query {
         routes: [Route]
         providers: [Provider]
         stops(latitude: Float, longitude: Float, radius: Float, units: String): [Stop]
+        stop(id: String): Stop
     }
 `
 
@@ -65,11 +67,12 @@ const resolvers = {
         stops: async (obj, {latitude, longitude, radius, units}, ctx) => {
             const response = await cache.getStopsInRadius(latitude, longitude, radius, units)
             const stops = Promise.all(response.map(async ({key, latitude, longitude, distance}) => {
-                const stop = await cache.getStop(key)
-                return {...stop, latitude, longitude, distance}
+                const {name, description, id} = await cache.getStop(key)
+                return {name, description, id, latitude, longitude, distance}
             }))
             return stops
-        }
+        },
+        stop: async (obj, { id }, ctx) => await cache.getStop(id)
     }
 }
 
