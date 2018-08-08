@@ -1,6 +1,7 @@
 // @flow
-const { ApolloServer, gql } = require('apollo-server')
-const axios = require('axios')
+import { ApolloServer, gql } from 'apollo-server'
+import axios from 'axios'
+import cache from './cache'
 
 // Types prefixed with `MTC` represent the format returned by the MetroTransit API.
 // Those prefixed with `TT` (`ThisTrip`) represent the format used by these projects.
@@ -36,9 +37,18 @@ const typeDefs = gql`
         id: String
     }
 
+    type Stop {
+        name: String
+        description: String
+        id: String
+        latitude: Float
+        longitude: Float
+    }
+
     type Query {
         routes: [Route]
-        providers: [Provider] 
+        providers: [Provider]
+        stops(latitude: Float, longitude: Float, radius: Float, units: String): [Stop]
     }
 `
 
@@ -51,6 +61,14 @@ const resolvers = {
         providers: async () => {
             const response = await axios.get(Provider.url)
             if (response && response.data && response.data.length > 0) return response.data.map(Provider.parse)
+        },
+        stops: async (obj, {latitude, longitude, radius, units}, ctx) => {
+            const response = await cache.getStopsInRadius(latitude, longitude, radius, units)
+            const stops = Promise.all(response.map(async ({key, latitude, longitude, distance}) => {
+                const stop = await cache.getStop(key)
+                return {...stop, latitude, longitude, distance}
+            }))
+            return stops
         }
     }
 }
