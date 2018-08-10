@@ -129,7 +129,6 @@ const resolvers = {
     },
     departures: async (_, { stopId }) => {
       const response = await axios.get(Departure.url(stopId))
-      console.log(response)
       if (response && response.data && response.data.length > 0)
         return response.data.map(Departure.parse).filter(d => d != null)
     },
