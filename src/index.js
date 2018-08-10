@@ -25,6 +25,13 @@ const Route = {
     url: `https://svc.metrotransit.org/nextrip/routes`
 }
 
+type MTCDirection = { Text: string, Value: string}
+export type TTDirection = { name: string, id: string }
+const Direction = {
+    parse: ({ Text, Value }: MTCDirection): TTDirection => ({ name: Text, id: Value}),
+    url: (routeId: string) => `http://svc.metrotransit.org/NexTrip/Directions/${routeId}?format=json`
+}
+
 const typeDefs = gql`
     type Provider {
         name: String
@@ -35,6 +42,11 @@ const typeDefs = gql`
         name: String
         providerId: String
         id: String
+    }
+
+    type Direction { 
+        id: String
+        name: String
     }
 
     type Stop {
@@ -49,8 +61,9 @@ const typeDefs = gql`
     type Query {
         routes: [Route]
         providers: [Provider]
-        stops(latitude: Float, longitude: Float, radius: Float, units: String): [Stop]
+        nearbyStops(latitude: Float, longitude: Float, radius: Float, units: String): [Stop]
         stop(id: String): Stop
+        directions(routeId: String): [Direction]
     }
 `
 
@@ -64,7 +77,7 @@ const resolvers = {
             const response = await axios.get(Provider.url)
             if (response && response.data && response.data.length > 0) return response.data.map(Provider.parse)
         },
-        stops: async (obj, {latitude, longitude, radius, units}, ctx) => {
+        nearbyStops: async (_, {latitude, longitude, radius = 500, units = "m"}) => {
             const response = await cache.getStopsInRadius(latitude, longitude, radius, units)
             const stops = Promise.all(response.map(async ({key, latitude, longitude, distance}) => {
                 const {name, description, id} = await cache.getStop(key)
@@ -72,7 +85,11 @@ const resolvers = {
             }))
             return stops
         },
-        stop: async (obj, { id }, ctx) => await cache.getStop(id)
+        stop: async (_, { id }) => await cache.getStop(id),
+        directions: async (_, { routeId }) => { 
+            const response = await axios.get(Direction.url(routeId))
+            return response.data.map(Direction.parse)
+        }
     }
 }
 
