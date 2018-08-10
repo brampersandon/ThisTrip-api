@@ -33,8 +33,7 @@
   },
   "lint-staged": {
     "src/**/*.js": [
-      "flow",
-      "jest",
+      "flow focus-check",
       "prettier --write --no-semi --single-quote",
       "git add ."
     ]

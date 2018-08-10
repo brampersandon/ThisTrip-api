@@ -18,4 +18,4 @@ Due to the time constraints, the test suite are not as comprehensive as I would 
 
 Correspondingly, a stronger reliance is placed on the type system to validate correctness of functions that transform objects from one format into another. This leans on the strengths of `flow` in comparison to writing out equivalent specs in `jest` (which may look rather similar to methodically checking the existence and values of certain properties on resulting objects), however as the application grows there could be additional business logic imbued in those transformations that could necessitate more extensive testing.
 
-Additionally, with more time, there could be a greater degree of shared code across the web interface and the API. 
+Additionally, with more time, there could be a greater degree of shared code across the web interface and the API. While the Flow types are shared across the project, keeping them in sync would be cleaner if both the `web` and `api` projects used a third `types` module. For ease of development, I did not create a separate package for this.
