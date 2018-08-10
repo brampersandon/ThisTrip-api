@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`nearbyStops can handle success 1`] = `
+Array [
+  Object {
+    "description": undefined,
+    "distance": undefined,
+    "id": "12252",
+    "latitude": undefined,
+    "longitude": undefined,
+    "name": "2nd St NE - Node & Broadway St",
+  },
+  Object {
+    "description": undefined,
+    "distance": undefined,
+    "id": "12252",
+    "latitude": undefined,
+    "longitude": undefined,
+    "name": "2nd St NE - Node & Broadway St",
+  },
+  Object {
+    "description": undefined,
+    "distance": undefined,
+    "id": "12252",
+    "latitude": undefined,
+    "longitude": undefined,
+    "name": "2nd St NE - Node & Broadway St",
+  },
+]
+`;
+
+exports[`resolvers departures can handle success 1`] = `
+Array [
+  Object {
+    "departingIn": "7 Min",
+    "direction": "SOUTHBOUND",
+    "latitude": 44.99882,
+    "longitude": -93.29575,
+    "routeId": "5",
+  },
+  Object {
+    "departingIn": "9 Min",
+    "direction": "SOUTHBOUND",
+    "latitude": 45.00329,
+    "longitude": -93.29567,
+    "routeId": "5",
+  },
+  Object {
+    "departingIn": "12 Min",
+    "direction": "SOUTHBOUND",
+    "latitude": 45.01678,
+    "longitude": -93.28809,
+    "routeId": "22",
+  },
+]
+`;
+
+exports[`resolvers stop can handle success 1`] = `
+Object {
+  "id": "12252",
+  "name": "2nd St NE - Node & Broadway St",
+}
+`;

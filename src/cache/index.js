@@ -2,7 +2,7 @@
 import * as redis from 'redis'
 
 import type { RedisClient } from 'redis'
-import type { TTProvider } from '../../types'
+import type { TTStop } from '../../types'
 
 const client = redis.createClient(process.env.REDIS_URI || '')
 
@@ -27,9 +27,27 @@ const getRadius = (coords, radius, options) =>
     })
   })
 
-// Exporting this function simplifies testing
-export const createCache = (client: RedisClient) => ({
-  getStop: async (id: string) => hgetall(client)(id),
+type GeoredisStopResult = TTStop & { key: string, distance: string }
+export type CacheClient = {
+  getStop: (id: string) => Promise<?TTStop>,
+  getStopsInRadius: (
+    latitude: string,
+    longitude: string,
+    radius: number,
+    units: string
+  ) => Promise<?Array<GeoredisStopResult>>
+}
+
+export const createCache = (client: RedisClient): CacheClient => ({
+  getStop: async (id: string) => {
+    const response = await hgetall(client)(id)
+    if (response == null) return null
+    return {
+      ...response,
+      latitude: parseFloat(response.latitude),
+      longitude: parseFloat(response.longitude)
+    }
+  },
   getStopsInRadius: (
     latitude: string,
     longitude: string,
@@ -38,4 +56,4 @@ export const createCache = (client: RedisClient) => ({
   ) => getRadius({ latitude, longitude }, radius, { units })
 })
 
-export default createCache(client)
+export const defaultClient = client

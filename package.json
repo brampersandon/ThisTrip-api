@@ -34,8 +34,13 @@
   "lint-staged": {
     "src/**/*.js": [
       "flow focus-check",
+      "yarn test",
       "prettier --write --no-semi --single-quote",
       "git add ."
     ]
+  },
+  "jest": {
+    "testURL": "http://localhost",
+    "verbose": true
   }
 }
