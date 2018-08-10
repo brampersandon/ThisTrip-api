@@ -16,4 +16,27 @@ export type MTCDirection = { Text: string, Value: string}
 export type TTDirection = { name: string, id: string }
 
 // STOPS
-export type TTStop = { name: string, description: string, id: string, latitude: string, longitude: string }
+export type TTStop = { name: string, description: string, id: string, latitude: number, longitude: number }
+
+// DEPARTURES
+export type MTCDeparture = {
+    Actual: boolean, // We only care about "actual" departures, so this will not be part of the app's internal type
+    BlockNumber: number,
+    DepartureText: string, // e.g., "7min"
+    DepartureTime: string, // This comes across as pseudocode, so we'll rely on DepartureText for now.
+    Gate: string, // Out of scope for now
+    Route: string,
+    RouteDirection: string,
+    Terminal: string,
+    VehicleHeading: number, // Out of scope for now
+    VehicleLatitude: number,
+    VehicleLongitude: number
+}
+
+export type TTDeparture = {
+    departingIn: string,
+    routeId: string, 
+    direction: string,
+    latitude: number,
+    longitude: number
+}

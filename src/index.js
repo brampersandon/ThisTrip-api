@@ -9,7 +9,9 @@ import type {
   MTCProvider,
   TTProvider,
   MTCDirection,
-  TTDirection
+  TTDirection,
+  MTCDeparture,
+  TTDeparture
 } from '../types'
 // Constants and helpers that correspond to our data types
 //
@@ -42,6 +44,28 @@ const Direction = {
     `http://svc.metrotransit.org/NexTrip/Directions/${routeId}?format=json`
 }
 
+const Departure = {
+  parse: ({
+    Actual,
+    DepartureText,
+    Route,
+    RouteDirection,
+    VehicleLatitude,
+    VehicleLongitude
+  }: MTCDeparture): ?TTDeparture => {
+    if (!Actual) return null // If the times aren't live, we don't want 'em
+    return {
+      routeId: Route,
+      departingIn: DepartureText,
+      direction: RouteDirection,
+      latitude: VehicleLatitude,
+      longitude: VehicleLongitude
+    }
+  },
+  url: (stopId: string) =>
+    `http://svc.metrotransit.org/NexTrip/${stopId}?format=json`
+}
+
 const typeDefs = gql`
   type Provider {
     name: String
@@ -57,6 +81,14 @@ const typeDefs = gql`
   type Direction {
     id: String
     name: String
+  }
+
+  type Departure {
+    departingIn: String
+    routeId: String
+    direction: String
+    latitude: Float
+    longitude: Float
   }
 
   type Stop {
@@ -78,6 +110,7 @@ const typeDefs = gql`
       units: String
     ): [Stop]
     stop(id: String): Stop
+    departures(stopId: String): [Departure]
     directions(routeId: String): [Direction]
   }
 `
@@ -93,6 +126,12 @@ const resolvers = {
       const response = await axios.get(Provider.url)
       if (response && response.data && response.data.length > 0)
         return response.data.map(Provider.parse)
+    },
+    departures: async (_, { stopId }) => {
+      const response = await axios.get(Departure.url(stopId))
+      console.log(response)
+      if (response && response.data && response.data.length > 0)
+        return response.data.map(Departure.parse).filter(d => d != null)
     },
     nearbyStops: async (
       _,
