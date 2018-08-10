@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn build & nodemon dist/index.js",
-    "build": "parcel watch src/index.js --target=node",
+    "dev":" yarn build & nodemon dist/index.js",
+    "start": "node dist/index.js",
+    "build": "parcel build src/index.js --target=node",
+    "watch": "parcel watch src/index.js --target=node",
     "test": "jest",
     "precommit": "lint-staged"
   },
